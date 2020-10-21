@@ -1,0 +1,53 @@
+Steps to Follow
+
+1)Launch Ansible Machine.
+2)Connect to Ansible Linux EC2 Terminal through Putty.
+3)Switch to root user.
+4)Update Server Packages.
+5)Install the ansible.
+
+  sudo su
+  yum update -y
+  
+  If we install Ansible we need to follow below pre-requisites.
+Download epel repository: 
+Install epel repository.
+Update epel repository.
+Install all individual packages inside the repository.
+
+wget https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
+ls
+yum install epel-release-latest-7.noarch.rpm -y
+yum update -y
+yum install git python python-devel python-pip openssl ansible -y
+ansible --version
+
+Set-Up in Inventory File(Host machine)
+
+Launch 2 Hosts “Ansible-Node-1” and “Ansible-Node-2”.
+Create a group and mention Hosts Private IP under the group in the Inventory file “/etc/ansible/hosts”.
+Uncomment two files “inventory = /etc/ansible/hosts” and “sudo_user = root” in the ansible configuration file “/etc/ansible/ansible.cfg”.
+
+vi /etc/ansible/hosts
+vi /etc/ansible/ansible.cfg
+
+Test Environment setup(ALL MACHINES)
+adduser ansible
+passwd ansible
+visudo {ansible ALL=(ALL) NOPASSWD: ALL}
+vi /etc/ssh/sshd_config
+permitroot login yes(uncomment)
+password authentication yes (uncomment)
+permitroot login no(comment)
+permitroot login no (comment)
+service sshd restart
+
+su - ansible
+check connection between server and nodes
+ssh private-ip
+
+create password less authencation
+ssh-keygen
+cd .ssh
+ssh-copy-id username@private-ip
+ssh private-ip
