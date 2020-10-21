@@ -1,0 +1,26 @@
+Tomcat for Windows
+Tomcat download-->tomcat8.5-->Binary Distrubation-->core-->windows sevice installer
+Run-->nxt-->agree-->nxt-->username/password-->nxt(java by default)-->install
+monitor tomcat-->open-->Automatic
+localhost:8080 (in browser)
+
+TOmcat directory
+tomcat-->conf-->server.xml(open it and change port number to 8090)-->save
+tomcat-->conf-->tomcat-users(to open tomcat doors)--> add manager_script, admin in last line of the tomcat-users
+
+
+Tomcat for Linux
+Tomcat download-->core-->tar.gz file
+cd /opt
+wget url-->ls-->tar -xvzf url-->mv url tomcat-->cd tomcat-->ls-->cd /bin-->ls-->./startup.sh
+find / -name context.xml
+modify first 2 files
+comment <value className.........>........<!------->
+
+Inorder to give username and password we need to modify another file
+cd /conf
+vi tomcat-users.xml
+
+restart service being inside bin directory
+./shutdown.sh
+./startup.sh
