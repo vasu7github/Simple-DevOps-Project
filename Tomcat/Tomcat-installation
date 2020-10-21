@@ -10,6 +10,7 @@ tomcat-->conf-->tomcat-users(to open tomcat doors)--> add manager_script, admin 
 
 
 Tomcat for Linux
+install java
 Tomcat download-->core-->tar.gz file
 cd /opt
 wget url-->ls-->tar -xvzf url-->mv url tomcat-->cd tomcat-->ls-->cd /bin-->ls-->./startup.sh
