@@ -15,7 +15,7 @@ Tomcat download-->core-->tar.gz file
 cd /opt
 wget url-->ls-->tar -xvzf url-->mv url tomcat-->cd tomcat-->ls-->cd /bin-->ls-->./startup.sh
 find / -name context.xml
-modify first 2 files
+modify second 2 files
 comment <value className.........>........<!------->
 
 Inorder to give username and password we need to modify another file
