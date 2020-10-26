@@ -1,0 +1,139 @@
+Jenkins installation in Linux
+------------------------------------
+Step-1
+--------
+launch ec2 instance
+install git
+set name and email-id
+
+Step-2
+--------
+open github account
+clone some web appilication to git
+
+Step-3
+--------
+Launch ec2-instance
+sudo su -
+hostname jenkins
+1) install java
+    By default 1.7 version will be there. we have to remove it and install 1.8
+    yum remove java-1.7.0*
+    yum install java-1.8* -y
+
+Now we have to set path to git 
+By using find command 
+
+    find /usr/lib/jvm/java-1.8* | head -n 3
+
+copy 3rd line : /usr/lib/jvm/java-1.8.0-openjdk-1.8.0.265.b01-1.amzn2.0.1.x86_64
+
+    ls -a
+.  ..  .bash_logout  .bash_profile  .bashrc  .ssh
+
+   open .bash_profile
+     vi .bash_profile
+we have to set path
+# User specific environment and startup programs
+JAVA_HOME=/usr/lib/jvm/java-1.8.0-openjdk-1.8.0.265.b01-1.amzn2.0.1.x86_64 (add)
+PATH=$PATH:$HOME/.local/bin:$HOME/bin:$JAVA_HOME (add)
+
+Now we have to restart. In linux the process is first we exit and again login
+       1) exit
+       2) sudo su - 
+we have to check path is correct or not
+   echo $JAVA_HOME
+
+2) install git
+
+3)Install Jenkins
+jenkins.io--> download--> redhat-->there will be two commands on top of page--->copy and paste and run--> yum install jenkins
+
+   service jenkins start
+   service jenkins status
+   open jenkins by using port 8080
+   we have to copy key
+   username:  admin
+   password: admin
+
+we have to give java address in jenkins
+  Global tool configurations -- add jdk
+    go to ec2--echo $JAVA_HOME--- copy url and paste.
+
+    Install github plugin (to pull code by jenkins server from github)--manage jenkins--manage plugins
+    Global tool configurations--git path--
+
+install maven
+    maven download--- tar.gz(Linux)
+   cd /opt----wget url---ls--tar -xvzf url
+   change the name of the directory
+   mv source  destination
+   cd maven---ls
+set maven path
+  vi ~/.bash_profile
+M2_HOME=/opt/maven
+M2=/opt/maven/bin
+PATH=$PATH:$HOME/bin:$JAVA_HOME:$M2:$M2_HOME
+
+   exit
+   sudo su -
+   echo $M2
+   echo $M2_HOME
+
+go back to jenkins
+  install maven plugin---maven integration,maven invoker
+ set maven path in jenkins
+  Global tool configurations--maven path-
+  
+4)Ansible setup
+launch ec2-instance ----http,ssh,8080
+install ansible
+follow ansible steps to create server and nodes......
+  
+  sudo chown -R ansadmin:ansadmin /home/ansadmin
+
+Connect Jenkins with ansible
+-----------------------------------
+
+install Publish Over SSH
+manage jenkins---configure system--- Publish Over SSH---ssh servers add--name:
+							Hostname: server private-ip
+							username: ansible server username
+							Remote Directory:-------
+							usepassword: *********
+						                Test connection---verfiy
+
+
+
+
+create new job check wheather working or not...
+
+In job  source files: webapp/target/*.war
+           Remove prefix: webapp/target
+           Remote direction: pwd(Eg:- //home//ansadmin)
+            
+Build now....
+
+
+Create Tomcat container in Nodes........
+follow tomcat steps......
+
+
+Create playbook to deploy war file in nodes:
+-------------------------------------------------------
+Eg:-
+       vi simple-devops-project.yml
+        ---
+        - hosts: all
+          become: yes
+          tasks:
+            -  name: Deploying war file into tomcat vm of ansible nodes
+               copy: src=./webapp.war dest=/root/tomcat/webapp
+
+Run playbook
+   ansible-playbook simple-devops-project.yml
+   ansible-playbook -i hosts(give path of host) simple-devops-project.yml ( if we create hostfile manually it wont pick host file automattically. we have to give host file manually)
+
+
+go to jenkins --- in post build actions--- transfers--- exec command
+   ansible-playbook -i /home/ansadmin/hosts(pwd ansible server/ /etc/ansible/hosts) /home/ansadmin/simple-devops-project.yml
