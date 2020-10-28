@@ -1,0 +1,87 @@
+	VPC
+-----------------------------
+Go to VPC
+Your VPCs-Create VPC
+Name tag:MyVPC
+IPv4 CIDR block*:10.0.0.0/16
+Create-Close
+-----------------
+Subnets-Create subnet
+Name tag:10.0.1.0/24 - ap-south-1a
+VPC*:Select MyVPC
+Availability Zone:Select ap-south-1a
+IPv4 CIDR block*:10.0.1.0/24
+Create-Close
+--------------
+Subnets-Create subnet
+Name tag:10.0.2.0/24 - ap-south-1b
+VPC*:Select MyVPC
+Availability Zone:Select ap-south-1b
+IPv4 CIDR block*:10.0.2.0/24
+Create-Close
+--------------
+Select 10.0.1.0/24 - ap-south-1a subnet, subnet-Actions-
+Modify Auto Assign IP settings-Enable auto-assign public IPv4 address-Save
+---------------------------------------
+Internet Gateways-Create internet gateway
+Name tag:MyIGW
+Create-Close
+MyIGW-Actions-Attach to VPC
+VPC:Select MyVPC-Attach
+----------------
+Route Tables-Create route table
+Name tag:InternetRT
+VPC*:Select MyVPC
+Create-Close
+-------------
+InternetRT
+Routes-Edit routes-Add route
+Destination:0.0.0.0/0
+Target:Select InternetGateWay
+Save routes-Close
+
+Subnet Associations-Edit subnet associations-select public SN-Save
+-----------
+NAT Gateways-Create NAT Gateway
+Subnet*:Select Public SN
+Elastic IP Allocation ID:Create New EIP
+Create a NAT Gateway-Close
+------------------
+Route Tables-Give name to existing RT(NatRT)
+Routes-Edit routes-Add route
+Destination:0.0.0.0/0
+Target:Select NatGateWay
+Save routes-Close
+
+Subnet Associations-Edit subnet associations-select private SN-Save
+--------------------------
+Launch 3 EC2s(Web & bastion in public subnet & DB server in private subnet)
+BastionServer's Security Group - Open ssh to MyIP
+WebServer's Security Group - Open ssh to MyIP
+                           - Open http to all
+DataBaseServer's Security Group - Open ssh to BastionServer's privateIP
+                                - Open MySQL to PublicSubNet
+(Only I can go inside BastionServer. So only I can go inside data base server from BastionServer) 
+--------------------------------
+Create network ACL
+Name tag-PublicNACL
+VPC*-MyVPC - Create
+Select PublicNACL
+Inbound Rules- Edit inbound rules - Add Rules
+100 - ssh - My Laptop's public IP
+200 - http - all
+300 - Custom TCP Rule - 1024-65535 - Save
+
+Outbound Rules- Edit Outbound rules - Add Rules
+100 - ssh - My Laptop's public IP
+200 - http - all
+300 - Custom TCP Rule - 1024-65535 - Save
+
+Goto Subnet assocations-Edit subnet associations-select PublicSN-save.
+-----------------------
+Terminate EC2 instances
+Delete NAT
+Release ElasticIP
+Delete MyVPC
+---------------------
+
