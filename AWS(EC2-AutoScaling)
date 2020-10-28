@@ -1,0 +1,54 @@
+Auto Scaling - Lab
+
+          Create Load Balancer (Steps already given in previous class)
+
+
+•	Go to Launch Templates - Create launch template
+•	Launch template name - MyLTMP(Can give any name)
+•	Template version description - 1
+•	Select "Provide guidance to help me set up a template that I can use with EC2 Auto Scaling"
+•	Amazon machine image (AMI) - Amazon Linux 2
+•	Instance type - T2-Micro
+•	Key pair - Select existing Key Pair
+•	Security groups - Select existing Security group (SSH & HTTP must be opened)
+•	Storage (volumes) - Make it as 9 GB
+•	Resource tags (Key - Name & Value - MyLTMP)
+•	Advanced details - User data
+
+#!/bin/bash sudo su
+yum update -y
+yum install httpd -y cd /var/www/html
+echo "MyGoogle" > index.html service httpd start
+chkconfig httpd on
+
+
+•	Create launch template - View launch templates
+•	Can see launch template has been created successfully
+ 
+•	Go to Auto Scaling Groups - Create an Auto Scaling group
+•	Auto Scaling group name - MyASG
+•	Launch template - Select MyLTMP - MyLTMP
+•	Subnets - Select all 3 subnets - Next
+•	Select Enable load balancing
+•	Classic Load Balancer - Select MyLB
+•	Select ELB
+•	Health check grace period - 150 - Next
+•	Desired capacity - 3
+•	Minimum capacity - 3
+•	Maximum capacity - 10
+•	Target tracking scaling policy
+•	Target value - 90
+•	Instances need - 300 - Next - Next
+•	Tags - Add Tag (Key - Name & Value - Web Server) - Next
+•	Create Auto Scaling group
+•	Can see Auto Scaling has been created successfully
+•	Can see all 3 instances running successfully.
+
+
+You can verify by terminating some instances to check whether Auto Scaling is working fine or not.
+
+
+Terminate all after finishing lab
+•	Delete Auto Scaling
+•	Delete Launch Template
+•	Delete Load Balancer
