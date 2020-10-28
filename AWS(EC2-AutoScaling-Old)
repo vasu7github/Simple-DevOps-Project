@@ -1,0 +1,35 @@
+Auto Scaling - Lab
+
+
+•	Create Load Balancer (Steps already given)
+•	 	
+•	Create Launch Configuration
+•	Amazon Linux-Select
+•	T2-Micro-Next
+•	Name-MyLCG
+•	Advanced Details
+•	User data- (paste Linux script)-Next-Next
+•	Select an existing security group-WebSG-Review-Create launch configuration
+•	Create a new key pair-web-Download Key Pair-Create Launch Configuration
+•	Create an Auto Scaling group using this launch configuration
+•	Group name-MyASG
+•	Subnet-(select all 3 subnets)
+•	Load Balancing-Receive traffic from one or more load balancers
+•	Classic Load Balancers-MyELB
+•	Health Check Type-ELB
+•	Health Check Grace Period-150-Next
+•	Use scaling policies to adjust the capacity of this group
+•	Scale between 4 and 10 instances
+•	Increase Group Size
+•	Scale the Auto Scaling group using step or simple scaling policies
+•	Add new alarm - uncheck (send notification) - 90 Percentage - Create Alarm -Take the action- add-1- Instances need-300
+•	Decrease Group Size
+•	Add new alarm - uncheck (send notification) - <= 30 Percentage - Create Alarm - Take the action- Remove-1 -Next-Next
+•	Key: Name, Value: Web Servers-Review – Create Auto Scaling Group - Close
+•	Can see all 4 machines
+•	Can verify by pasting Load Balancer's DNS name in browser (can see webpage)
+•	 	
+-
+•	Delete Auto Scaling Groups
+•	Delete Launch Configuration
+•	Delete Load balancer
