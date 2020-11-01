@@ -1,0 +1,48 @@
+pipeline{
+    agent any
+    tools {
+  maven 'M2_HOME'
+    }
+    stages{
+        stage("SCM"){
+            steps{
+                git 'https://github.com/vasu7github/my-app.git'
+            }
+        }
+        stage("Code"){
+            steps{
+                sh "mvn pmd:pmd"
+                sh "mvn checkstyle:checkstyle" 
+            }
+            post {
+                always {
+                    pmd canComputeNew: false, defaultEncoding: '', healthy: '', pattern: 'server/target/*.xml', unHealthy: ''
+                    checkstyle canComputeNew: false, defaultEncoding: '', healthy: '', pattern: 'server/target/*.xml', unHealthy: ''
+                }
+            }
+        } 
+        stage("BUILD"){
+            steps{
+                sh "mvn clean package"
+            }
+        }
+        stage("TEST"){
+            steps {
+                sh 'mvn test'
+            }
+            post {
+                always {
+                    junit 'target/surefire-reports/*.xml'
+                }
+            }
+        }
+        stage("Deploy to ansible"){
+            steps {
+                sshagent(['ec2-user']) {
+                sh 'scp -o StrictHostKeyChecking=no target/*.war ec2-user@172.31.38.44:/home/ec2-user'
+                }
+            }
+        
+        }
+    }
+}
